@@ -1,8 +1,8 @@
 import os
-from Modules.Mutagen.id3 import ID3Wrapper
-from Modules.Mutagen.mp4 import MP4Wrapper
-from Modules.Mutagen.audio_manager import IAudioManager
-from Modules.Mutagen.vorbis import VorbisWrapper
+from .id3 import ID3Wrapper
+from .mp4 import MP4Wrapper
+from .audio_manager import IAudioManager
+from .vorbis import VorbisWrapper
 
 
 audioFileHandler = {

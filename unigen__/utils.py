@@ -1,11 +1,6 @@
 import re
 from math import ceil, log10
-from sys import exception
-from typing import Any, Literal, Optional, Union
-
-from Modules.Utils.general_utils import get_default_logger
-
-logger = get_default_logger(__name__, "info")
+from typing import Any, Literal
 
 pictureTypes = Literal[
     "Other",
@@ -56,7 +51,7 @@ def toString(var: Any) -> str:
     return str(var) if var is not None else var
 
 
-def splitAndGetFirst(discNumber: Optional[str]) -> Optional[str]:
+def splitAndGetFirst(discNumber: str | None) -> str | None:
     # get the count of tracks -> checks if the input is something like 4/20 -> truncates to 4
     # output is a string, input can be an integer, float, ...
     if not discNumber:
@@ -72,7 +67,7 @@ def splitAndGetFirst(discNumber: Optional[str]) -> Optional[str]:
     return discNumber
 
 
-def splitAndGetSecond(discNumber: Optional[str]) -> Optional[str]:
+def splitAndGetSecond(discNumber: str | None) -> str | None:
     # get the count of tracks -> checks if the input is something like 4/20 -> truncates to 20
     # output is a string, input can be an integer, float, ...
     if not discNumber:
@@ -112,19 +107,19 @@ def getProperCount(count: str | int | None, totalCount: str | int | None) -> tup
             upperBound = int(ceil(log10(int(totalCount) + 1)))
             return str(count).zfill(upperBound), str(totalCount)
         except Exception as e:
-            logger.error(f"exception while standardizing count. returning as it is. Error: {e}")
+            print(f"exception while standardizing count. returning as it is. Error: {e}")
     else:
-        logger.error(f"both count and totalCount are required for standardizing counts, returning as it is. provided count: {count}, totalCount: {totalCount}")
+        print(f"both count and totalCount are required for standardizing counts, returning as it is. provided count: {count}, totalCount: {totalCount}")
     return toString(count), toString(totalCount)
 
 
-def convertStringToNumber(var: Optional[str]) -> Optional[int]:
+def convertStringToNumber(var: str | None) -> int | None:
     if not var:
         return None
     return int(var)
 
 
-def toList(var: Optional[list[Any]]) -> list[Any]:
+def toList(var: list[Any] | None) -> list[Any]:
     """converts None to empty list"""
     if not var:
         return []
@@ -151,7 +146,7 @@ def cleanDate(date_str: str) -> str:
     return "-".join(parts)
 
 
-def extractYearFromDate(date: Optional[str]) -> Optional[str]:
+def extractYearFromDate(date: str | None) -> str | None:
     if not date:
         return None
     cleaned_date = cleanDate(date)

@@ -1,11 +1,7 @@
 from typing import Any, Optional
 from abc import ABC, abstractmethod
 
-from Modules.Mutagen.utils import pictureTypes
-from Modules.Utils.general_utils import get_default_logger
-
-
-logger = get_default_logger(__name__, "info")
+from .utils import pictureTypes
 
 """
 This is a wrapper around mutagen module. 

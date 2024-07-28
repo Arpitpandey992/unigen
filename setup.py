@@ -5,6 +5,7 @@ setup(
     version='1.0',
     packages=find_packages(),
     install_requires=[
-        'mutagen>=1.47.0'
+        'mutagen>=1.47.0',
+        'pydantic>=2.8.2'
     ]
 )
