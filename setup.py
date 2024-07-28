@@ -8,7 +8,10 @@ setup(
     version='1.1',
     packages=find_packages(),
     install_requires=[
-        'mutagen>=1.47.0'
+        'mutagen'
+    ],
+    tests_require=[
+        'pytest',
     ],
     long_description=description,
     long_description_content_type="text/markdown",
