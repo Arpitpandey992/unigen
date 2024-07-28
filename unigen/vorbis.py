@@ -5,8 +5,8 @@ from mutagen.flac import Picture as PictureFLAC, FLAC
 from mutagen.oggvorbis import OggVorbis
 from mutagen.oggopus import OggOpus
 
-from Modules.Mutagen.audio_manager import IAudioManager
-from Modules.Mutagen.utils import (
+from .audio_manager import IAudioManager
+from .utils import (
     pictureNameToNumber,
     cleanDate,
     convertStringToNumber,

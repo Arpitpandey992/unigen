@@ -2,8 +2,8 @@ from typing import Literal
 
 from mutagen.mp4 import MP4, MP4Cover
 
-from Modules.Mutagen.audio_manager import IAudioManager
-from Modules.Mutagen.utils import (
+from .audio_manager import IAudioManager
+from .utils import (
     cleanDate,
     convertStringToNumber,
     toList,

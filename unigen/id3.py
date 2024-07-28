@@ -4,8 +4,8 @@ from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 
 from mutagen.id3._frames import APIC, TALB, TDRC, TRCK, COMM, TXXX, TPOS, TIT2
-from Modules.Mutagen.audio_manager import IAudioManager
-from Modules.Mutagen.utils import (
+from .audio_manager import IAudioManager
+from .utils import (
     pictureNameToNumber,
     cleanDate,
     convertStringToNumber,
