@@ -4,14 +4,12 @@ with open("README.md", "r") as f:
     description = f.read()
 
 setup(
-    name='unigen',
-    version='1.1',
+    name="unigen",
+    version="1.2",
     packages=find_packages(),
-    install_requires=[
-        'mutagen'
-    ],
+    install_requires=["mutagen"],
     tests_require=[
-        'pytest',
+        "pytest",
     ],
     long_description=description,
     long_description_content_type="text/markdown",
