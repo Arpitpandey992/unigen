@@ -5,7 +5,7 @@ from mutagen.flac import Picture as PictureFLAC, FLAC
 from mutagen.oggvorbis import OggVorbis
 from mutagen.oggopus import OggOpus
 
-from .audio_manager import IAudioManager
+from .audio_manager import IAudioManager, non_custom_tags
 from .utils import (
     pictureNameToNumber,
     cleanDate,
@@ -193,6 +193,13 @@ class VorbisWrapper(IAudioManager):
 
     def getCustomTag(self, key):
         return toList(self.audio.get(key))
+
+    def getAllCustomTags(self) -> dict[str, list[str]]:
+        custom_tags: dict[str, list[str]] = {}
+        for tag_name, tag_value in self.audio.tags.items():
+            if tag_name not in non_custom_tags:
+                custom_tags[tag_name] = tag_value
+        return custom_tags
 
     def getDate(self):
         date = self._searchMultiCustomTags(["date", "ORIGINALDATE", "year", "ORIGINALYEAR"])

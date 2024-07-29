@@ -2,9 +2,14 @@ import os
 import shutil
 import string
 import random
-from typing import Any, Callable, Optional, get_args
 import unittest
+from typing import Any, Callable, Optional, get_args
 
+# REMOVE#
+import sys
+
+sys.path.append(os.getcwd())
+# REMOVE#
 from unigen import AudioFactory, IAudioManager, pictureTypes
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
