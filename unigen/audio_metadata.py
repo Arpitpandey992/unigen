@@ -1,0 +1,47 @@
+from typing import TypedDict, Optional
+from .utils import pictureTypes
+
+
+class AudioFileMetadata(TypedDict, total=False):
+    title: list[str]
+    album: list[str]
+    artist: list[str]
+    album_artist: list[str]
+    disc_number: Optional[int]
+    total_discs: Optional[int]
+    track_number: Optional[int]
+    total_tracks: Optional[int]
+    comment: list[str]
+    date: Optional[str]
+    catalog: list[str]
+    barcode: list[str]
+    disc_name: list[str]
+    custom_tags: dict[str, list[str]]
+    picture_types: list[pictureTypes]
+    extension: str
+
+    # Not supported yet:
+    Genre: Optional[str]
+    Duration: Optional[str]
+    Arranger: Optional[str]
+    Author: Optional[str]
+    BPM: Optional[str]
+    Composer: Optional[str]
+    Conductor: Optional[str]
+    Copyright: Optional[str]
+    Encoded_by: Optional[str]
+    Grouping: Optional[str]
+    ISRC: Optional[str]
+    Language: Optional[str]
+    Lyricist: Optional[str]
+    Lyrics: Optional[str]
+    Media: Optional[str]
+    Original_Album: Optional[str]
+    Original_Artist: Optional[str]
+    Original_Date: Optional[str]
+    Part: Optional[str]
+    Performer: Optional[str]
+    Publisher: Optional[str]
+    Remixer: Optional[str]
+    Subtitle: Optional[str]
+    Website: Optional[str]
