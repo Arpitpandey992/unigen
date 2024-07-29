@@ -1,47 +1,88 @@
-from typing import TypedDict, Optional
-from .utils import pictureTypes
+from pydantic import BaseModel, Field
+from typing import Optional
+
+from unigen.audio_manager import IAudioManager
+from .utils import pictureTypes, pictureNameToNumber
 
 
-class AudioFileMetadata(TypedDict, total=False):
-    title: list[str]
-    album: list[str]
-    artist: list[str]
-    album_artist: list[str]
-    disc_number: Optional[int]
-    total_discs: Optional[int]
-    track_number: Optional[int]
-    total_tracks: Optional[int]
-    comment: list[str]
-    date: Optional[str]
-    catalog: list[str]
-    barcode: list[str]
-    disc_name: list[str]
-    custom_tags: dict[str, list[str]]
-    picture_types: list[pictureTypes]
-    extension: str
+class Picture(BaseModel):
+    picture_type: pictureTypes
+    data: bytes
 
-    # Not supported yet:
-    Genre: Optional[str]
-    Duration: Optional[str]
-    Arranger: Optional[str]
-    Author: Optional[str]
-    BPM: Optional[str]
-    Composer: Optional[str]
-    Conductor: Optional[str]
-    Copyright: Optional[str]
-    Encoded_by: Optional[str]
-    Grouping: Optional[str]
-    ISRC: Optional[str]
-    Language: Optional[str]
-    Lyricist: Optional[str]
-    Lyrics: Optional[str]
-    Media: Optional[str]
-    Original_Album: Optional[str]
-    Original_Artist: Optional[str]
-    Original_Date: Optional[str]
-    Part: Optional[str]
-    Performer: Optional[str]
-    Publisher: Optional[str]
-    Remixer: Optional[str]
-    Subtitle: Optional[str]
-    Website: Optional[str]
+    @property
+    def picture_type_index(self):
+        return pictureNameToNumber[self.picture_type]
+
+
+class AudioFileMetadata(BaseModel):
+    title: list[str] = Field(default_factory=list)
+    album: list[str] = Field(default_factory=list)
+    artist: list[str] = Field(default_factory=list)
+    album_artist: list[str] = Field(default_factory=list)
+    disc_number: Optional[int] = None
+    total_discs: Optional[int] = None
+    track_number: Optional[int] = None
+    total_tracks: Optional[int] = None
+    comment: list[str] = Field(default_factory=list)
+    date: Optional[str] = None
+    catalog: list[str] = Field(default_factory=list)
+    barcode: list[str] = Field(default_factory=list)
+    disc_name: list[str] = Field(default_factory=list)
+    custom_tags: dict[str, list[str]] = Field(default_factory=dict)
+    pictures: list[Picture] = Field(default_factory=list)
+    extension: str = ""
+
+    # unsupported fields
+    genre: Optional[str] = None
+    duration: Optional[str] = None
+    arranger: Optional[str] = None
+    author: Optional[str] = None
+    bpm: Optional[str] = None
+    composer: Optional[str] = None
+    conductor: Optional[str] = None
+    copyright: Optional[str] = None
+    encoded_by: Optional[str] = None
+    grouping: Optional[str] = None
+    isrc: Optional[str] = None
+    language: Optional[str] = None
+    lyricist: Optional[str] = None
+    lyrics: Optional[str] = None
+    media: Optional[str] = None
+    original_album: Optional[str] = None
+    original_artist: Optional[str] = None
+    original_date: Optional[str] = None
+    part: Optional[str] = None
+    performer: Optional[str] = None
+    publisher: Optional[str] = None
+    remixer: Optional[str] = None
+    subtitle: Optional[str] = None
+    website: Optional[str] = None
+
+    @classmethod
+    def from_audio_manager(cls, audio_manager: IAudioManager) -> "AudioFileMetadata":
+        """
+        Factory method to create an AudioFileMetadata instance from an IAudioManager instance.
+        """
+        return cls(
+            title=audio_manager.getTitle(),
+            album=audio_manager.getAlbum(),
+            artist=audio_manager.getArtist(),
+            album_artist=audio_manager.getAlbumArtist(),
+            disc_number=audio_manager.getDiscNumber(),
+            total_discs=audio_manager.getTotalDiscs(),
+            track_number=audio_manager.getTrackNumber(),
+            total_tracks=audio_manager.getTotalTracks(),
+            comment=audio_manager.getComment(),
+            date=audio_manager.getDate(),
+            catalog=audio_manager.getCatalog(),
+            barcode=audio_manager.getBarcode(),
+            disc_name=audio_manager.getDiscName(),
+            # custom_tags=audio_manager.
+            # pictures=audio_manager.
+            extension=audio_manager.getExtension(),
+        )
+
+
+metadata = AudioFileMetadata(title=["Song Title"], album=["Album Name"], artist=["Artist Name"])
+
+print(metadata.model_dump_json())

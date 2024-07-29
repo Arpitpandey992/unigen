@@ -7,7 +7,7 @@ setup(
     name="unigen",
     version="1.2",
     packages=find_packages(),
-    install_requires=["mutagen"],
+    install_requires=["mutagen", "pydantic"],
     tests_require=[
         "pytest",
     ],
