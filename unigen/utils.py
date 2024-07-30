@@ -120,7 +120,7 @@ def convertStringToNumber(var: str | None) -> int | None:
 
 
 def toList(var: list[Any] | None | Any) -> list[Any]:
-    """converts None to empty list"""
+    """converts given variable to a list containing that variable, or an empty list if variable is None"""
     if not var:
         return []
     if isinstance(var, list):

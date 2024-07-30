@@ -3,7 +3,7 @@ from typing import Literal
 
 from mutagen.mp4 import MP4, MP4Cover
 
-from .audio_manager import IAudioManager
+from .audio_manager import IAudioManager, non_custom_tags
 from .utils import (
     cleanDate,
     convertStringToNumber,
@@ -80,19 +80,19 @@ class MP4Wrapper(IAudioManager):
         return toList(self.audio.get("aART"))
 
     def getDiscNumber(self):
-        disk = toList(getFirstElement(self.audio.get("disk")))
+        disk = getFirstElement(self.audio.get("disk"))
         return convertStringToNumber(disk[0]) if disk else None
 
     def getTotalDiscs(self):
-        disk = toList(getFirstElement(self.audio.get("disk")))
+        disk = getFirstElement(self.audio.get("disk"))
         return convertStringToNumber(disk[1]) if disk else None
 
     def getTrackNumber(self):
-        trkn = toList(getFirstElement(self.audio.get("trkn")))
+        trkn = getFirstElement(self.audio.get("trkn"))
         return convertStringToNumber(trkn[0]) if trkn else None
 
     def getTotalTracks(self):
-        trkn = toList(getFirstElement(self.audio.get("trkn")))
+        trkn = getFirstElement(self.audio.get("trkn"))
         return convertStringToNumber(trkn[1]) if trkn else None
 
     def getComment(self):
@@ -117,8 +117,9 @@ class MP4Wrapper(IAudioManager):
             match = re.search(pattern, key)
             if match:
                 tag_key = match.group(1)
-                tag_value = [v.decode("utf-8") for v in toList(value)]
-                custom_tags[tag_key] = tag_value
+                if tag_key.lower() not in non_custom_tags:
+                    tag_value = [v.decode("utf-8") for v in toList(value)]
+                    custom_tags[tag_key] = tag_value
 
         return custom_tags
 

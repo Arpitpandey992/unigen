@@ -25,7 +25,7 @@ japanese_chars = [
     (0x4E00, 0x9FBF),  # Common Kanji
 ]
 all_japanese_chars = "".join(chr(x) for x in [k for start, end in japanese_chars for k in range(start, end)])
-audioImpl: IAudioManager
+audioImpl: Callable[[], IAudioManager]
 filePathImpl: str
 
 
@@ -39,17 +39,22 @@ def getRandomCoverImageData() -> bytes:
     return image_data
 
 
-def generate_random_string(x: int, y: int):
-    siz = random.randint(x, y)
-    characters = string.ascii_letters + string.digits  # You can customize this further
-    random_string = "".join(random.choice(characters) for _ in range(siz))
+def generate_random_string(size_lower_limit: int, size_upper_limit: int):
+    string_size = random.randint(size_lower_limit, size_upper_limit)
+    characters = string.ascii_letters + string.digits
+    random_string = "".join(random.choice(characters) for _ in range(string_size))
     return random_string
 
 
-def generate_random_japanese_string(x: int, y: int) -> str:
-    siz = random.randint(x, y)
+def generate_random_japanese_string(size_lower_limit: int, size_upper_limit: int) -> str:
+    siz = random.randint(size_lower_limit, size_upper_limit)
     random_string = "".join(random.choice(all_japanese_chars) for _ in range(siz))
     return random_string
+
+
+def generate_random_list_containing_random_strings(list_size_lower_limit: int, list_size_upper_limit: int, string_size_lower_limit: int, string_size_upper_limit: int):
+    list_size = random.randint(list_size_lower_limit, list_size_upper_limit)
+    return [generate_random_string(string_size_lower_limit, string_size_upper_limit) if random.randint(0, 1) == 0 else generate_random_japanese_string(string_size_lower_limit, string_size_upper_limit) for _ in range(list_size)]
 
 
 def select_random_keys_from_list(arr: list[Any]) -> list[Any]:
@@ -63,7 +68,7 @@ def generate_random_number_between_inclusive(l: int, r: int) -> int:
 
 class TestMutagenWrapper(unittest.TestCase):
     def setUp(self):
-        self.audio = audioImpl
+        self.audio = audioImpl()
         self.file_path = filePathImpl
         self.single_cover_test = False  # for optimization, this will only test for one cover embed, hence greatly reducing test run time
 
@@ -122,7 +127,36 @@ class TestMutagenWrapper(unittest.TestCase):
         self._test_equality_list_arg(self.audio.setCatalog, self.audio.getCatalog, generateValueList())
         self._test_equality_list_arg(self.audio.setDiscName, self.audio.getDiscName, generateValueList())
         self._test_equality_list_arg(self.audio.setBarcode, self.audio.getBarcode, generateValueList())
-    
+
+    def test_all_custom_tags(self):
+        NUM_KEYS_TO_TEST = random.randint(5, 20)
+        LIST_SIZE_BOUNDS = (random.randint(1, 10), random.randint(10, 20))
+        STRING_SIZE_BOUNDS = (random.randint(1, 10), random.randint(10, 20))
+
+        def create_random_list_internal():
+            return generate_random_list_containing_random_strings(LIST_SIZE_BOUNDS[0], LIST_SIZE_BOUNDS[1], STRING_SIZE_BOUNDS[0], STRING_SIZE_BOUNDS[1])
+
+        custom_tags_inserted: dict[str, list[str]] = {}
+        for _ in range(NUM_KEYS_TO_TEST):
+            key = generate_random_string(STRING_SIZE_BOUNDS[0], STRING_SIZE_BOUNDS[1])
+            custom_tags_inserted[key] = create_random_list_internal()
+            self.audio.setCustomTag(key, custom_tags_inserted[key])
+        # the following fields are inserted as custom fields but they are not returned by getAllCustomTags function because they are defined manually
+        barcode = create_random_list_internal()
+        self.audio.setBarcode(barcode)
+        catalog = create_random_list_internal()
+        self.audio.setCatalog(catalog)
+        custom_tags_received = self.audio.getAllCustomTags()
+        custom_tags_received = {key.lower(): value for key, value in custom_tags_received.items()}
+
+        for tag_inserted, value_inserted in custom_tags_inserted.items():
+            tag_inserted = tag_inserted.lower()
+            self.assertTrue(tag_inserted in custom_tags_received, f"{tag_inserted} was not inserted in the audio file as a custom tag")
+            self.assertListEqual(custom_tags_received[tag_inserted], value_inserted, f"custom tag values are not matching:\ninserted: {value_inserted}\nreceived: {custom_tags_received[tag_inserted]}")
+
+            custom_tags_received.pop(tag_inserted.lower())
+        self.assertTrue(len(custom_tags_received) == 0, f"extra custom tags which should not have appeared: {custom_tags_received}")
+
     def test_getting_information(self):
         self.assertIsInstance(self.audio.printInfo(), str)
 
@@ -179,6 +213,8 @@ class TestMutagenWrapper(unittest.TestCase):
 
 def copy_base_samples(force: bool = False):
     print("copying base samples to modified folder")
+    if os.path.exists(modifiedFolder):
+        shutil.rmtree(modifiedFolder)
     os.makedirs(modifiedFolder, exist_ok=True)
     for file in os.listdir(baseFolder):
         file_path = os.path.join(baseFolder, file)
@@ -190,15 +226,13 @@ def copy_base_samples(force: bool = False):
 
 
 def test_mutagen_wrapper():
-    extensions = ["mp3", "flac", "m4a", "wav", "ogg", "opus"]
+    extensions = ["flac", "mp3", "m4a", "wav", "ogg", "opus"]
     for extension in extensions:
         suite = unittest.TestLoader().loadTestsFromTestCase(TestMutagenWrapper)
         print(f"\nTesting {extension} file")
         filePath = os.path.join(modifiedFolder, f"{extension}_test.{extension}")
         global audioImpl, filePathImpl
-        audioImpl = AudioFactory.buildAudioManager(filePath)
-        audioImpl.clearTags()
-        # audioImpl.save()
+        audioImpl = lambda: AudioFactory.buildAudioManager(filePath)
         filePathImpl = filePath
         unittest.TextTestRunner().run(suite)
 
