@@ -197,7 +197,7 @@ class VorbisWrapper(IAudioManager):
     def getAllCustomTags(self) -> dict[str, list[str]]:
         custom_tags: dict[str, list[str]] = {}
         for tag_name, tag_value in self.audio.tags.items():
-            if tag_name not in non_custom_tags:
+            if tag_name.lower() not in non_custom_tags:
                 custom_tags[tag_name] = tag_value
         return custom_tags
 

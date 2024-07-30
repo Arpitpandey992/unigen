@@ -1,3 +1,4 @@
+import re
 from typing import Literal
 
 from mutagen.mp4 import MP4, MP4Cover
@@ -108,6 +109,18 @@ class MP4Wrapper(IAudioManager):
             return []
         value = [v.decode("utf-8") for v in value]
         return value
+
+    def getAllCustomTags(self):
+        custom_tags: dict[str, list[str]] = {}
+        pattern = r"----:com\.apple\.iTunes:(.*)"
+        for key, value in self.audio.items():
+            match = re.search(pattern, key)
+            if match:
+                tag_key = match.group(1)
+                tag_value = [v.decode("utf-8") for v in toList(value)]
+                custom_tags[tag_key] = tag_value
+
+        return custom_tags
 
     def getCatalog(self):
         return self._searchMultiCustomTags(["CATALOGNUMBER", "CATALOG", "LABELNO"])

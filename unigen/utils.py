@@ -119,11 +119,13 @@ def convertStringToNumber(var: str | None) -> int | None:
     return int(var)
 
 
-def toList(var: list[Any] | None) -> list[Any]:
+def toList(var: list[Any] | None | Any) -> list[Any]:
     """converts None to empty list"""
     if not var:
         return []
-    return var
+    if isinstance(var, list):
+        return var
+    return [var]
 
 
 def is_date_in_YYYY_MM_DD(date: str) -> bool:

@@ -57,6 +57,10 @@ def select_random_keys_from_list(arr: list[Any]) -> list[Any]:
     return random.sample(arr, num_keys_to_select)
 
 
+def generate_random_number_between_inclusive(l: int, r: int) -> int:
+    return random.randint(l, r)
+
+
 class TestMutagenWrapper(unittest.TestCase):
     def setUp(self):
         self.audio = audioImpl
@@ -79,6 +83,19 @@ class TestMutagenWrapper(unittest.TestCase):
         self.assertEqual(tot_discs, self.audio.getTotalDiscs())
         self.assertEqual(track, self.audio.getTrackNumber())
         self.assertEqual(tot_tracks, self.audio.getTotalTracks())
+        for _ in range(100):
+            disc = generate_random_number_between_inclusive(1, 100)
+            tot_discs = generate_random_number_between_inclusive(disc + 1, 200)
+
+            track = generate_random_number_between_inclusive(1, 100)
+            tot_tracks = generate_random_number_between_inclusive(track + 1, 200)
+
+            self.audio.setDiscNumbers(disc, tot_discs)
+            self.audio.setTrackNumbers(track, tot_tracks)
+            self.assertEqual(disc, self.audio.getDiscNumber())
+            self.assertEqual(tot_discs, self.audio.getTotalDiscs())
+            self.assertEqual(track, self.audio.getTrackNumber())
+            self.assertEqual(tot_tracks, self.audio.getTotalTracks())
 
     def test_comment(self):
         test_arr = ["comment1", "find this album at vgmdb.net/damn_son", generate_random_string(5, 20), "album4", generate_random_japanese_string(8, 32), generate_random_string(50, 200)]
@@ -105,7 +122,7 @@ class TestMutagenWrapper(unittest.TestCase):
         self._test_equality_list_arg(self.audio.setCatalog, self.audio.getCatalog, generateValueList())
         self._test_equality_list_arg(self.audio.setDiscName, self.audio.getDiscName, generateValueList())
         self._test_equality_list_arg(self.audio.setBarcode, self.audio.getBarcode, generateValueList())
-
+    
     def test_getting_information(self):
         self.assertIsInstance(self.audio.printInfo(), str)
 

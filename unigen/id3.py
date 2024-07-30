@@ -4,7 +4,7 @@ from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 
 from mutagen.id3._frames import APIC, TALB, TDRC, TRCK, COMM, TXXX, TPOS, TIT2
-from .audio_manager import IAudioManager
+from .audio_manager import IAudioManager, non_custom_tags
 from .utils import (
     pictureNameToNumber,
     cleanDate,
@@ -172,6 +172,11 @@ class ID3Wrapper(IAudioManager):
             if key == frame.desc:
                 return frame.text
         return []
+
+    def getAllCustomTags(self):
+        frames = self.audio.getall("TXXX")
+        custom_tags = {frame.desc: frame.text for frame in frames if frame.desc.lower() not in non_custom_tags}
+        return custom_tags
 
     def getCatalog(self):
         return self._searchMultiCustomTags(["CATALOGNUMBER", "CATALOG", "LABELNO"])

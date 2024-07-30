@@ -114,9 +114,9 @@ class IAudioManager(ABC):
     def getCustomTag(self, key: str) -> list[str]:
         """get a custom tag as Key = value (which can be a string or a list of strings)"""
 
-    # @abstractmethod
-    # def getAllCustomTags(self) -> dict[str, list[str]]:
-    #     """get a dict containing all custom tags in the file defined as key-value pairs"""
+    @abstractmethod
+    def getAllCustomTags(self) -> dict[str, list[str]]:
+        """get a dict containing all custom tags in the file defined as key-value pairs"""
 
     @abstractmethod
     def getCatalog(self) -> list[str]:
@@ -155,15 +155,19 @@ non_custom_tags: list[str] = [
     "title",
     "album",
     "artist",
-    "album_artist",
-    "disc_number",
-    "total_discs",
-    "track_number",
-    "total_tracks",
+    "albumartist",
+    "discnumber",
+    "totaldiscs",
+    "disctotal",
+    "tracknumber",
+    "totaltracks",
+    "tracktotal",
     "comment",
     "date",
     "catalog",
+    "labelno",
     "catalognumber",
     "barcode",
-    "disc_name",
+    "discname",
+    "discsubtitle",
 ]
