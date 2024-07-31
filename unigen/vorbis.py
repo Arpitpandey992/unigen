@@ -5,6 +5,8 @@ from mutagen.flac import Picture as PictureFLAC, FLAC
 from mutagen.oggvorbis import OggVorbis
 from mutagen.oggopus import OggOpus
 
+from unigen.audio_metadata import Picture
+
 from .audio_manager import IAudioManager, non_custom_tags
 from .utils import (
     pictureNameToNumber,
@@ -89,7 +91,7 @@ class VorbisWrapper(IAudioManager):
     def __init__(self, file_path: str, extension: Literal[".flac", ".ogg", ".opus"]):
         extension_handlers = {".flac": CustomFLAC, ".ogg": CustomOgg, ".opus": CustomOpus}
         self.extension = extension.lower()
-        self.audio = extension_handlers[extension](file_path)
+        self.audio: CustomFLAC | CustomOgg | CustomOpus = extension_handlers[extension](file_path)
 
     def setTitle(self, newTitle):
         self.audio["title"] = newTitle
@@ -196,7 +198,7 @@ class VorbisWrapper(IAudioManager):
 
     def getAllCustomTags(self) -> dict[str, list[str]]:
         custom_tags: dict[str, list[str]] = {}
-        for tag_name, tag_value in self.audio.tags.items():
+        for tag_name, tag_value in self.audio.items():
             if tag_name.lower() not in non_custom_tags:
                 custom_tags[tag_name] = tag_value
         return custom_tags
@@ -213,6 +215,13 @@ class VorbisWrapper(IAudioManager):
 
     def getDiscName(self):
         return self._searchMultiCustomTags(["DISCSUBTITLE", "DISCNAME"])
+
+    def getAllPictures(self):
+        pictures: list[Picture] = []
+        picture = PictureFLAC()
+        for picture in self.audio.pictures:
+            pictures.append(Picture(picture_type=picture.type, data=picture.data))
+        return pictures
 
     def printInfo(self):
         return self.audio.pprint()
