@@ -4,7 +4,6 @@ __pycache__/
 *$py.class
 
 #custom
-.vscode
 tests/testSamples/modifiedSamples
 tempCodeRunnerFile.*
 

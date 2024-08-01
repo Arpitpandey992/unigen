@@ -76,3 +76,18 @@ def get_test_file_path(file_extension: str) -> str:
     if file_extension not in supported_extensions:
         raise Exception(f"{file_extension} is not supported")
     return os.path.join(modifiedFolder, f"{file_extension}_test.{file_extension}")
+
+
+def save_image(image_bytes: bytes, filename: str):
+    """
+    Save image bytes to a file.
+
+    :param image_bytes: Bytes representing the image.
+    :param filename: Name of the file to save the image as.
+    """
+    try:
+        with open(filename, "wb") as img_file:
+            img_file.write(image_bytes)
+        print(f"Image saved as {filename}.")
+    except Exception as e:
+        print(f"Error saving image: {e}")

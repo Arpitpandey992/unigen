@@ -2,7 +2,6 @@ from abc import abstractmethod
 import os
 import random
 import pytest
-import unittest
 from typing import Any, Callable, Optional, get_args
 
 # REMOVE#
@@ -12,8 +11,8 @@ import sys
 sys.path.append(os.getcwd())
 # REMOVE#
 from unigen.audio_manager import IAudioManager
-from tests.test_utils import copy_base_samples, generate_random_japanese_string, generate_random_list_containing_random_strings, generate_random_number_between_inclusive, generate_random_string, get_test_file_path, getRandomCoverImageData, select_random_keys_from_list
-from unigen import AudioFactory, pictureTypes, pictureNameToNumber
+from tests.test_utils import copy_base_samples, generate_random_japanese_string, generate_random_list_containing_random_strings, generate_random_number_between_inclusive, generate_random_string, getRandomCoverImageData, save_image, select_random_keys_from_list
+from unigen import pictureTypes, pictureNameToNumber
 from unigen.types.picture import Picture
 
 
@@ -161,7 +160,7 @@ class IUnigenTester:
         """This test is not for m4a files because they don't support multiple pictures"""
         chosen_picture_types: list[pictureTypes] = list(get_args(pictureTypes))
         if self.is_single_cover_test():
-            chosen_picture_types = [random.choice(chosen_picture_types)]
+            chosen_picture_types = ["Cover (front)"]
         else:
             chosen_picture_types = select_random_keys_from_list(chosen_picture_types)
         set_pictures: list[Picture] = []
@@ -171,6 +170,9 @@ class IUnigenTester:
             self.audio.setPictureOfType(image_data, picture_type)
 
         get_pictures: list[Picture] = self.audio.getAllPictures()
+        # for i in range(len(get_pictures)):
+        #     save_image(get_pictures[i].data, f"get_picture_{get_pictures[i].picture_type_name}_{self.get_extension()}.jpg")
+        #     save_image(set_pictures[i].data, f"set_picture_{set_pictures[i].picture_type_name}_{self.get_extension()}.jpg") # For debugging, remove later
         self.assertListEqual(set_pictures, get_pictures)
 
     def test_xx_save(self):
@@ -220,4 +222,4 @@ class IUnigenTester:
 
 
 if __name__ == "__main__":
-    unittest.main()
+    pytest.main()

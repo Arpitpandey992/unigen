@@ -4,6 +4,7 @@ from typing import Literal
 from mutagen.mp4 import MP4, MP4Cover
 
 from unigen.audio_manager import IAudioManager, non_custom_tags
+from unigen.types.picture import Picture
 from unigen.utils import (
     cleanDate,
     convertStringToNumber,
@@ -131,6 +132,12 @@ class MP4Wrapper(IAudioManager):
 
     def getDiscName(self):
         return self._searchMultiCustomTags(["DISCSUBTITLE", "DISCNAME"])
+
+    def getAllPictures(self):
+        pictures: list[Picture] = []
+        if "covr" in self.audio and self.audio["covr"][0].imageformat == MP4Cover.FORMAT_JPEG:
+            pictures.append(Picture(picture_type=3, data=bytes(self.audio["covr"][0])))
+        return pictures
 
     def printInfo(self):
         return self.audio.pprint()

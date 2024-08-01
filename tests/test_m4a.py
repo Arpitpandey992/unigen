@@ -13,3 +13,7 @@ class TestM4a(IUnigenTester):
     @classmethod
     def get_extension(cls):
         return "m4a"
+
+    @classmethod
+    def is_single_cover_test(cls) -> bool:
+        return True
