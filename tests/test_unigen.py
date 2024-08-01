@@ -1,76 +1,53 @@
+from abc import abstractmethod
 import os
-import shutil
-import string
 import random
+import pytest
 import unittest
 from typing import Any, Callable, Optional, get_args
 
 # REMOVE#
 import sys
 
+
 sys.path.append(os.getcwd())
 # REMOVE#
-from unigen import AudioFactory, IAudioManager, pictureTypes
-
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-baseFolder = os.path.join(__location__, "testSamples", "baseSamples")
-modifiedFolder = os.path.join(__location__, "testSamples", "modifiedSamples")
-coversPath = os.path.join(baseFolder, "covers")
-covers = [os.path.join(coversPath, coverName) for coverName in os.listdir(coversPath)]
-
-# Unicode range for common Japanese characters (Hiragana, Katakana, and common Kanji)
-japanese_chars = [
-    (0x3041, 0x3096),  # Hiragana
-    (0x30A1, 0x30F6),  # Katakana
-    (0x4E00, 0x9FBF),  # Common Kanji
-]
-all_japanese_chars = "".join(chr(x) for x in [k for start, end in japanese_chars for k in range(start, end)])
-audioImpl: Callable[[], IAudioManager]
-filePathImpl: str
+from unigen.audio_manager import IAudioManager
+from tests.test_utils import copy_base_samples, generate_random_japanese_string, generate_random_list_containing_random_strings, generate_random_number_between_inclusive, generate_random_string, get_test_file_path, getRandomCoverImageData, select_random_keys_from_list
+from unigen import AudioFactory, pictureTypes, pictureNameToNumber
+from unigen.types.picture import Picture
 
 
-def getRandomCoverImageData() -> bytes:
-    num_covers = len(covers)
-    cover_index = random.randrange(0, num_covers, 1)
-    path = covers[cover_index]
-    # del covers[cover_index]
-    with open(path, "rb") as image_file:
-        image_data = image_file.read()
-    return image_data
+class IUnigenTester:
+    single_cover_test = False
 
+    @pytest.fixture(scope="class")
+    @classmethod
+    def setUpClass(cls):
+        # Code to run once before any tests in this class
+        print(f"\nTesting {cls.get_extension()}")
+        copy_base_samples()
 
-def generate_random_string(size_lower_limit: int, size_upper_limit: int):
-    string_size = random.randint(size_lower_limit, size_upper_limit)
-    characters = string.ascii_letters + string.digits
-    random_string = "".join(random.choice(characters) for _ in range(string_size))
-    return random_string
-
-
-def generate_random_japanese_string(size_lower_limit: int, size_upper_limit: int) -> str:
-    siz = random.randint(size_lower_limit, size_upper_limit)
-    random_string = "".join(random.choice(all_japanese_chars) for _ in range(siz))
-    return random_string
-
-
-def generate_random_list_containing_random_strings(list_size_lower_limit: int, list_size_upper_limit: int, string_size_lower_limit: int, string_size_upper_limit: int):
-    list_size = random.randint(list_size_lower_limit, list_size_upper_limit)
-    return [generate_random_string(string_size_lower_limit, string_size_upper_limit) if random.randint(0, 1) == 0 else generate_random_japanese_string(string_size_lower_limit, string_size_upper_limit) for _ in range(list_size)]
-
-
-def select_random_keys_from_list(arr: list[Any]) -> list[Any]:
-    num_keys_to_select = random.randint(2, len(arr))
-    return random.sample(arr, num_keys_to_select)
-
-
-def generate_random_number_between_inclusive(l: int, r: int) -> int:
-    return random.randint(l, r)
-
-
-class TestMutagenWrapper(unittest.TestCase):
+    @pytest.fixture(autouse=True)
     def setUp(self):
-        self.audio = audioImpl()
-        self.file_path = filePathImpl
-        self.single_cover_test = False  # for optimization, this will only test for one cover embed, hence greatly reducing test run time
+        self.audio = self.create_audio_manager()
+
+    @classmethod
+    @abstractmethod
+    def create_audio_manager(cls) -> IAudioManager:
+        """Should return an audiomanager of the type which is being tested. This should be overridden by child classes if required"""
+
+    @classmethod
+    @abstractmethod
+    def get_extension(cls) -> str:
+        """Return the extension of the class to be tested"""
+
+    @classmethod
+    def is_single_cover_test(cls) -> bool:
+        """
+        if extension only supports one artwork, the child class should override this and return True
+        this can also be overridden for optimization, this will only test for one cover embed, hence greatly reducing test run time if files are saved beforehand
+        """
+        return False
 
     def test_title(self):
         test_arr = ["title1", "title2", "title3", generate_random_string(5, 20), generate_random_japanese_string(8, 32)]
@@ -180,6 +157,22 @@ class TestMutagenWrapper(unittest.TestCase):
         for picture_type in chosen_picture_types:
             self.assertTrue(self.audio.hasPictureOfType(picture_type))
 
+    def test_getting_all_pictures(self):
+        """This test is not for m4a files because they don't support multiple pictures"""
+        chosen_picture_types: list[pictureTypes] = list(get_args(pictureTypes))
+        if self.is_single_cover_test():
+            chosen_picture_types = [random.choice(chosen_picture_types)]
+        else:
+            chosen_picture_types = select_random_keys_from_list(chosen_picture_types)
+        set_pictures: list[Picture] = []
+        for picture_type in chosen_picture_types:
+            image_data = getRandomCoverImageData()
+            set_pictures.append(Picture(picture_type=pictureNameToNumber[picture_type], data=image_data))
+            self.audio.setPictureOfType(image_data, picture_type)
+
+        get_pictures: list[Picture] = self.audio.getAllPictures()
+        self.assertListEqual(set_pictures, get_pictures)
+
     def test_xx_save(self):
         """xx is prepended so that the audio file is saved at the end"""
         self.audio.save()
@@ -210,32 +203,21 @@ class TestMutagenWrapper(unittest.TestCase):
         self.audio.setCustomTag(key, val)
         self.assertEqual(self.audio.getCustomTag(key), expected)
 
+    def assertTrue(self, expr, msg=None):
+        assert expr is True, msg or f"Expected True but got {expr}"
 
-def copy_base_samples(force: bool = False):
-    print("copying base samples to modified folder")
-    if os.path.exists(modifiedFolder):
-        shutil.rmtree(modifiedFolder)
-    os.makedirs(modifiedFolder, exist_ok=True)
-    for file in os.listdir(baseFolder):
-        file_path = os.path.join(baseFolder, file)
-        modified_file_path = os.path.join(modifiedFolder, file)
-        if not force and os.path.exists(modified_file_path):
-            continue
-        if os.path.isfile(file_path):
-            shutil.copy(file_path, modifiedFolder)
+    def assertFalse(self, expr, msg=None):
+        assert expr is False, msg or f"Expected False but got {expr}"
 
+    def assertEqual(self, actual, expected, msg=None):
+        assert actual == expected, msg or f"Expected {expected} but got {actual}"
 
-def test_mutagen_wrapper():
-    extensions = ["flac", "mp3", "m4a", "wav", "ogg", "opus"]
-    for extension in extensions:
-        suite = unittest.TestLoader().loadTestsFromTestCase(TestMutagenWrapper)
-        print(f"\nTesting {extension} file")
-        filePath = os.path.join(modifiedFolder, f"{extension}_test.{extension}")
-        global audioImpl, filePathImpl
-        audioImpl = lambda: AudioFactory.buildAudioManager(filePath)
-        filePathImpl = filePath
-        unittest.TextTestRunner().run(suite)
+    def assertIsInstance(self, obj, cls, msg=None):
+        assert isinstance(obj, cls), msg or f"Expected {obj} to be an instance of {cls}, but got {type(obj)}"
+
+    def assertListEqual(self, list1, list2, msg=None):
+        assert list1 == list2, msg or f"Expected lists to be equal: {list1} != {list2}"
 
 
-copy_base_samples()
-test_mutagen_wrapper()
+if __name__ == "__main__":
+    unittest.main()

@@ -2,16 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 from unigen.audio_manager import IAudioManager
-from .utils import pictureNumberToName
-
-
-class Picture(BaseModel):
-    picture_type: int
-    data: bytes
-
-    @property
-    def picture_type_name(self):
-        return pictureNumberToName[self.picture_type]
+from unigen.types.picture import Picture
 
 
 class AudioFileMetadata(BaseModel):

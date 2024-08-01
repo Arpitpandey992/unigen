@@ -3,8 +3,8 @@ from typing import Literal
 
 from mutagen.mp4 import MP4, MP4Cover
 
-from .audio_manager import IAudioManager, non_custom_tags
-from .utils import (
+from unigen.audio_manager import IAudioManager, non_custom_tags
+from unigen.utils import (
     cleanDate,
     convertStringToNumber,
     toList,

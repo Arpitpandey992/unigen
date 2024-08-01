@@ -4,6 +4,8 @@ from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 
 from mutagen.id3._frames import APIC, TALB, TDRC, TRCK, COMM, TXXX, TPOS, TIT2
+
+from unigen.types.picture import Picture
 from .audio_manager import IAudioManager, non_custom_tags
 from .utils import (
     pictureNameToNumber,
@@ -186,6 +188,21 @@ class ID3Wrapper(IAudioManager):
 
     def getDiscName(self):
         return self._searchMultiCustomTags(["DISCSUBTITLE", "DISCNAME"])
+
+    def getAllPictures(self):
+        pictures: list[Picture] = []
+        audio_pictures = self.audio.getall("APIC")
+        if audio_pictures:
+            for picture in audio_pictures:
+                if isinstance(picture, APIC):
+                    picture_dict = picture.__dict__
+                    if "type" not in picture_dict:
+                        print("warning: picture does not contain a type. taking 0 as default")
+                    if "data" not in picture_dict:
+                        print("warning: picture does not contain any data. skipped")
+                        continue
+                    pictures.append(Picture(picture_type=picture.__dict__.get("type", 0), data=picture.__dict__["data"]))
+        return pictures
 
     def printInfo(self):
         return self.audio.pprint()

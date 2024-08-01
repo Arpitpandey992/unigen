@@ -1,7 +1,15 @@
 from typing import Any, Optional
 from abc import ABC, abstractmethod
 
-from .utils import pictureTypes
+# REMOVE
+import sys
+import os
+
+sys.path.append(os.getcwd())
+# REMOVE
+from unigen.types.picture import Picture
+
+from unigen.utils import pictureTypes
 
 """
 This is a wrapper around mutagen module. 
@@ -129,6 +137,10 @@ class IAudioManager(ABC):
     @abstractmethod
     def getDiscName(self) -> list[str]:
         """get the name of the disc"""
+
+    @abstractmethod
+    def getAllPictures(self) -> list[Picture]:
+        """get all pictures embedded into the audio file"""
 
     @abstractmethod
     def printInfo(self) -> str:

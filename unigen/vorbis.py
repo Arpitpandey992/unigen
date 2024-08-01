@@ -5,7 +5,7 @@ from mutagen.flac import Picture as PictureFLAC, FLAC
 from mutagen.oggvorbis import OggVorbis
 from mutagen.oggopus import OggOpus
 
-from unigen.audio_metadata import Picture
+from unigen.types.picture import Picture
 
 from .audio_manager import IAudioManager, non_custom_tags
 from .utils import (
