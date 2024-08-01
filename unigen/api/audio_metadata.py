@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 
-from unigen.audio_manager import IAudioManager
+from unigen.wrapper.audio_manager import IAudioManager
 from unigen.types.picture import Picture
 
 
@@ -74,6 +74,6 @@ class AudioFileMetadata(BaseModel):
         )
 
 
-metadata = AudioFileMetadata(title=["Song Title"], album=["Album Name"], artist=["Artist Name"])
-
-print(metadata.model_dump_json())
+if __name__ == "__main__":
+    metadata = AudioFileMetadata(title=["Song Title"], album=["Album Name"], artist=["Artist Name"])
+    print(metadata.model_dump_json())

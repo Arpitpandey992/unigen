@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from unigen.utils import pictureNumberToName
+from unigen.wrapper.utils import pictureNumberToName
 
 
 class Picture(BaseModel):

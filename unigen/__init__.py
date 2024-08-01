@@ -1,3 +1,3 @@
-from .audio_factory import AudioFactory, UnsupportedFileFormatError, isFileFormatSupported
-from .audio_manager import IAudioManager
-from .utils import pictureNameToNumber, pictureTypes
+from .wrapper.audio_factory import AudioFactory, UnsupportedFileFormatError, isFileFormatSupported
+from .wrapper.audio_manager import IAudioManager
+from .wrapper.utils import pictureNameToNumber, pictureTypes

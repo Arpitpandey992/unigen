@@ -3,9 +3,9 @@ from typing import Literal
 
 from mutagen.mp4 import MP4, MP4Cover
 
-from unigen.audio_manager import IAudioManager, non_custom_tags
+from unigen.wrapper.audio_manager import IAudioManager, non_custom_tags
 from unigen.types.picture import Picture
-from unigen.utils import (
+from unigen.wrapper.utils import (
     cleanDate,
     convertStringToNumber,
     toList,

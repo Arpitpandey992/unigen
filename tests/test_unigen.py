@@ -10,7 +10,7 @@ import sys
 
 sys.path.append(os.getcwd())
 # REMOVE#
-from unigen.audio_manager import IAudioManager
+from unigen.wrapper.audio_manager import IAudioManager
 from tests.test_utils import copy_base_samples, generate_random_japanese_string, generate_random_list_containing_random_strings, generate_random_number_between_inclusive, generate_random_string, getRandomCoverImageData, save_image, select_random_keys_from_list
 from unigen import pictureTypes, pictureNameToNumber
 from unigen.types.picture import Picture

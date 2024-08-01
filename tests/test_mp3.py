@@ -1,7 +1,7 @@
 from tests.test_unigen import IUnigenTester
 from tests.test_utils import get_test_file_path
 from unigen import AudioFactory
-from unigen.audio_manager import IAudioManager
+from unigen.wrapper.audio_manager import IAudioManager
 
 
 class TestMp3(IUnigenTester):

@@ -1,15 +1,8 @@
 from typing import Any, Optional
 from abc import ABC, abstractmethod
 
-# REMOVE
-import sys
-import os
-
-sys.path.append(os.getcwd())
-# REMOVE
 from unigen.types.picture import Picture
-
-from unigen.utils import pictureTypes
+from unigen.wrapper.utils import pictureTypes
 
 """
 This is a wrapper around mutagen module. 
