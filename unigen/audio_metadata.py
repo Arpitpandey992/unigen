@@ -69,7 +69,7 @@ class AudioFileMetadata(BaseModel):
             barcode=audio_manager.getBarcode(),
             disc_name=audio_manager.getDiscName(),
             custom_tags=audio_manager.getAllCustomTags(),
-            # pictures=audio_manager.
+            pictures=audio_manager.getAllPictures(),
             extension=audio_manager.getExtension(),
         )
 
