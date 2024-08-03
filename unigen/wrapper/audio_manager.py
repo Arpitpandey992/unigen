@@ -1,8 +1,7 @@
-from typing import Any, Optional
 from abc import ABC, abstractmethod
+from typing import Any, Optional
 
-from unigen.types.picture import Picture
-from unigen.wrapper.utils import pictureTypes
+from unigen.types.picture import PICTURE_TYPE, Picture
 
 """
 This is a wrapper around mutagen module. 
@@ -40,15 +39,15 @@ class IAudioManager(ABC):
         """Set comment"""
 
     @abstractmethod
-    def setPictureOfType(self, imageData: bytes, pictureType: pictureTypes) -> None:
+    def setPictureOfType(self, imageData: bytes, pictureType: PICTURE_TYPE) -> None:
         """Set a picture of some type"""
 
     @abstractmethod
-    def hasPictureOfType(self, pictureType: pictureTypes) -> bool:
+    def hasPictureOfType(self, pictureType: PICTURE_TYPE) -> bool:
         """check whether a picture of some type (3 = front Cover) is present"""
 
     @abstractmethod
-    def deletePictureOfType(self, pictureType: pictureTypes) -> bool:
+    def deletePictureOfType(self, pictureType: PICTURE_TYPE) -> bool:
         """delete a picture of some type (3 = front Cover), returns True if picture successfully deleted"""
 
     @abstractmethod

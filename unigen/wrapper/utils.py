@@ -1,46 +1,8 @@
 import re
 from math import ceil, log10
-from typing import Any, Literal
+from typing import Any
 
-pictureTypes = Literal[
-    "Other",
-    "File icon",
-    "Other file icon",
-    "Cover (front)",
-    "Cover (back)",
-    "Leaflet page",
-    "Media (e.g. lable side of CD)",
-    "Lead artist/lead performer/soloist",
-    "Artist/performer",
-    "Conductor",
-    "Band/Orchestra",
-    "Composer",
-    "Lyricist/text writer",
-    "Recording Location",
-    "During recording",
-    "During performance",
-]
-
-pictureNameToNumber: dict[pictureTypes, int] = {
-    "Other": 0,
-    "File icon": 1,
-    "Other file icon": 2,
-    "Cover (front)": 3,
-    "Cover (back)": 4,
-    "Leaflet page": 5,
-    "Media (e.g. lable side of CD)": 6,
-    "Lead artist/lead performer/soloist": 7,
-    "Artist/performer": 8,
-    "Conductor": 9,
-    "Band/Orchestra": 10,
-    "Composer": 11,
-    "Lyricist/text writer": 12,
-    "Recording Location": 13,
-    "During recording": 14,
-    "During performance": 15,
-}
-
-pictureNumberToName: dict[int, pictureTypes] = {number: name for name, number in pictureNameToNumber.items()}
+from unigen.types.picture import PICTURE_NAME_TO_NUMBER, PICTURE_TYPE
 
 
 def isString(var: Any) -> bool:

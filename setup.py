@@ -9,7 +9,6 @@ setup(
     packages=find_packages(),
     install_requires=[
         "mutagen",
-        "pydantic",
     ],
     tests_require=[
         "pytest",

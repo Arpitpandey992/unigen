@@ -1,22 +1,22 @@
 from typing import Literal
+
 from mutagen.id3 import ID3
+from mutagen.id3._frames import APIC, COMM, TALB, TDRC, TIT2, TPOS, TRCK, TXXX
 from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 
-from mutagen.id3._frames import APIC, TALB, TDRC, TRCK, COMM, TXXX, TPOS, TIT2
+from unigen.types.picture import PICTURE_NAME_TO_NUMBER, Picture
 
-from unigen.types.picture import Picture
 from .audio_manager import IAudioManager, non_custom_tags
 from .utils import (
-    pictureNameToNumber,
     cleanDate,
     convertStringToNumber,
-    toList,
+    extractYearFromDate,
     getFirstElement,
     getProperCount,
     splitAndGetFirst,
     splitAndGetSecond,
-    extractYearFromDate,
+    toList,
 )
 
 
@@ -75,20 +75,20 @@ class ID3Wrapper(IAudioManager):
         self.audio.add(COMM(encoding=3, text=comment))
 
     def setPictureOfType(self, imageData, pictureType):
-        picture = APIC(encoding=3, mime="image/jpeg", type=pictureNameToNumber[pictureType], desc=pictureType, data=imageData)
+        picture = APIC(encoding=3, mime="image/jpeg", type=PICTURE_NAME_TO_NUMBER[pictureType], desc=pictureType, data=imageData)
         self.audio.add(picture)
 
     def hasPictureOfType(self, pictureType):
         pictures = self.audio.getall("APIC")
         if pictures:
             for picture in pictures:
-                if picture.type == pictureNameToNumber[pictureType]:
+                if picture.type == PICTURE_NAME_TO_NUMBER[pictureType]:
                     return True
         return False
 
     def deletePictureOfType(self, pictureType):
         for frame in self.audio.getall("APIC"):
-            if frame.type == pictureNameToNumber[pictureType]:
+            if frame.type == PICTURE_NAME_TO_NUMBER[pictureType]:
                 self.audio.pop(frame.HashKey)
                 return True
         return False

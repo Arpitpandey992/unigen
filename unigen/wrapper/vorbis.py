@@ -1,23 +1,23 @@
 import base64
 from typing import Literal
 
-from mutagen.flac import Picture as PictureFLAC, FLAC
-from mutagen.oggvorbis import OggVorbis
+from mutagen.flac import FLAC
+from mutagen.flac import Picture as PictureFLAC
 from mutagen.oggopus import OggOpus
+from mutagen.oggvorbis import OggVorbis
 
-from unigen.types.picture import Picture
+from unigen.types.picture import PICTURE_NAME_TO_NUMBER, Picture
 
 from .audio_manager import IAudioManager, non_custom_tags
 from .utils import (
-    pictureNameToNumber,
     cleanDate,
     convertStringToNumber,
-    toList,
+    extractYearFromDate,
     getFirstElement,
     getProperCount,
     splitAndGetFirst,
     splitAndGetSecond,
-    extractYearFromDate,
+    toList,
 )
 
 
@@ -117,21 +117,21 @@ class VorbisWrapper(IAudioManager):
     def setPictureOfType(self, imageData, pictureType):
         picture = PictureFLAC()
         picture.data = imageData
-        picture.type = pictureNameToNumber[pictureType]
+        picture.type = PICTURE_NAME_TO_NUMBER[pictureType]
         picture.mime = "image/jpeg"
         picture.desc = pictureType
         self.audio.add_picture(picture)
 
     def hasPictureOfType(self, pictureType):
         for picture in self.audio.pictures:
-            if picture.type == -1 or picture.type == pictureNameToNumber[pictureType]:  # -1 for ogg/opus since they can only have one picture
+            if picture.type == -1 or picture.type == PICTURE_NAME_TO_NUMBER[pictureType]:  # -1 for ogg/opus since they can only have one picture
                 return True
         return False
 
     def deletePictureOfType(self, pictureType):
         if not self.hasPictureOfType(pictureType):
             return False
-        self.audio.delete_picture_of_type(pictureNameToNumber[pictureType])
+        self.audio.delete_picture_of_type(PICTURE_NAME_TO_NUMBER[pictureType])
         return True
 
     def setDate(self, date):
@@ -165,7 +165,7 @@ class VorbisWrapper(IAudioManager):
 
     def getDiscNumber(self):
         ans = getFirstElement(self.audio.get("discnumber"))
-        # Usually the track number will be a simple number for Vorbis files, but sometimes it is like 01/23 which is wrong but to avoid the corner case, we are splitting it regardless
+        # Usually the disc number will be a simple number for Vorbis files, but sometimes it is like 01/23 which is wrong but to avoid the corner case, we are splitting it regardless
         return convertStringToNumber(splitAndGetFirst(ans))
 
     def getTotalDiscs(self):

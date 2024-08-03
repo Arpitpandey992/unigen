@@ -1,19 +1,28 @@
-from abc import abstractmethod
 import os
 import random
-import pytest
-from typing import Any, Callable, Optional, get_args
 
 # REMOVE#
 import sys
+from abc import abstractmethod
+from typing import Any, Callable, Optional, get_args
 
+import pytest
 
 sys.path.append(os.getcwd())
+from tests.test_utils import (
+    copy_base_samples,
+    generate_random_japanese_string,
+    generate_random_list_containing_random_strings,
+    generate_random_number_between_inclusive,
+    generate_random_string,
+    getRandomCoverImageData,
+    save_image,
+    select_random_keys_from_list,
+)
+from unigen.types.picture import PICTURE_NAME_TO_NUMBER, PICTURE_TYPE, Picture
+
 # REMOVE#
 from unigen.wrapper.audio_manager import IAudioManager
-from tests.test_utils import copy_base_samples, generate_random_japanese_string, generate_random_list_containing_random_strings, generate_random_number_between_inclusive, generate_random_string, getRandomCoverImageData, save_image, select_random_keys_from_list
-from unigen import pictureTypes, pictureNameToNumber
-from unigen.types.picture import Picture
 
 
 class IUnigenTester:
@@ -145,7 +154,7 @@ class IUnigenTester:
 
     def test_setting_multiple_pictures(self):
         """This test is not for m4a files because they don't support multiple pictures"""
-        chosen_picture_types: list[pictureTypes] = list(get_args(pictureTypes))
+        chosen_picture_types: list[PICTURE_TYPE] = list(get_args(PICTURE_TYPE))
         if self.single_cover_test:
             chosen_picture_types = [random.choice(chosen_picture_types)]
         else:
@@ -158,7 +167,7 @@ class IUnigenTester:
 
     def test_getting_all_pictures(self):
         """This test is not for m4a files because they don't support multiple pictures"""
-        chosen_picture_types: list[pictureTypes] = list(get_args(pictureTypes))
+        chosen_picture_types: list[PICTURE_TYPE] = list(get_args(PICTURE_TYPE))
         if self.is_single_cover_test():
             chosen_picture_types = ["Cover (front)"]
         else:
@@ -166,7 +175,7 @@ class IUnigenTester:
         set_pictures: list[Picture] = []
         for picture_type in chosen_picture_types:
             image_data = getRandomCoverImageData()
-            set_pictures.append(Picture(picture_type=pictureNameToNumber[picture_type], data=image_data))
+            set_pictures.append(Picture(picture_type=PICTURE_NAME_TO_NUMBER[picture_type], data=image_data))
             self.audio.setPictureOfType(image_data, picture_type)
 
         get_pictures: list[Picture] = self.audio.getAllPictures()

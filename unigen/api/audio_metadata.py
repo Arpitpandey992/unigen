@@ -1,26 +1,27 @@
-from pydantic import BaseModel, Field
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
 
-from unigen.wrapper.audio_manager import IAudioManager
 from unigen.types.picture import Picture
+from unigen.wrapper.audio_manager import IAudioManager
 
 
-class AudioFileMetadata(BaseModel):
-    title: list[str] = Field(default_factory=list)
-    album: list[str] = Field(default_factory=list)
-    artist: list[str] = Field(default_factory=list)
-    album_artist: list[str] = Field(default_factory=list)
+@dataclass
+class AudioFileMetadata:
+    title: List[str] = field(default_factory=list)
+    album: List[str] = field(default_factory=list)
+    artist: List[str] = field(default_factory=list)
+    album_artist: List[str] = field(default_factory=list)
     disc_number: Optional[int] = None
     total_discs: Optional[int] = None
     track_number: Optional[int] = None
     total_tracks: Optional[int] = None
-    comment: list[str] = Field(default_factory=list)
+    comment: List[str] = field(default_factory=list)
     date: Optional[str] = None
-    catalog: list[str] = Field(default_factory=list)
-    barcode: list[str] = Field(default_factory=list)
-    disc_name: list[str] = Field(default_factory=list)
-    custom_tags: dict[str, list[str]] = Field(default_factory=dict)
-    pictures: list[Picture] = Field(default_factory=list)
+    catalog: List[str] = field(default_factory=list)
+    barcode: List[str] = field(default_factory=list)
+    disc_name: List[str] = field(default_factory=list)
+    custom_tags: Dict[str, List[str]] = field(default_factory=dict)
+    pictures: List[Picture] = field(default_factory=list)
     extension: str = ""
 
     # unsupported fields
@@ -76,4 +77,4 @@ class AudioFileMetadata(BaseModel):
 
 if __name__ == "__main__":
     metadata = AudioFileMetadata(title=["Song Title"], album=["Album Name"], artist=["Artist Name"])
-    print(metadata.model_dump_json())
+    print(metadata)
