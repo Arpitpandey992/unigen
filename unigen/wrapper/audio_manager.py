@@ -1,6 +1,8 @@
+import os
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Optional
 
+from unigen.types.audio_metadata import AudioFileMetadata, Tags
 from unigen.types.picture import PICTURE_TYPE, Picture
 
 """
@@ -13,6 +15,19 @@ class IAudioManager(ABC):
     """
     Interface Class for generalizing usage of Mutagen across multiple formats
     """
+
+    @abstractmethod
+    def getFilePath(self) -> str:
+        """filepath of the audio file"""
+
+    def getFileName(self) -> str:
+        """filename of the audio file"""
+        return os.path.basename(self.getFilePath())
+
+    def getExtension(self) -> str:
+        """Extension of the audio file like .mp3, .flac, etc"""
+        _, extension = os.path.splitext(self.getFilePath())
+        return extension.lower()
 
     @abstractmethod
     def setTitle(self, newTitle: list[str]):
@@ -138,13 +153,30 @@ class IAudioManager(ABC):
     def printInfo(self) -> str:
         """See the metadata information in Human Readable Format"""
 
-    @abstractmethod
-    def getInfo(self) -> Any:
-        """get the info metadata object"""
-
-    @abstractmethod
-    def getExtension(self) -> str:
-        """get the extension name of the file"""
+    def getMetadata(self) -> AudioFileMetadata:
+        return AudioFileMetadata(
+            file_name=self.getFileName(),
+            file_path=self.getFilePath(),
+            extension=self.getExtension(),
+            tags=Tags(
+                title=self.getTitle(),
+                album=self.getAlbum(),
+                artist=self.getArtist(),
+                album_artist=self.getAlbumArtist(),
+                disc_number=self.getDiscNumber(),
+                total_discs=self.getTotalDiscs(),
+                track_number=self.getTrackNumber(),
+                total_tracks=self.getTotalTracks(),
+                comment=self.getComment(),
+                date=self.getDate(),
+                catalog=self.getCatalog(),
+                barcode=self.getBarcode(),
+                disc_name=self.getDiscName(),
+                custom_tags=self.getAllCustomTags(),
+                pictures=self.getAllPictures(),
+                extension=self.getExtension(),
+            ),
+        )
 
     @abstractmethod
     def save(self) -> None:

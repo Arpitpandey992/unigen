@@ -6,6 +6,7 @@ from mutagen.flac import Picture as PictureFLAC
 from mutagen.oggopus import OggOpus
 from mutagen.oggvorbis import OggVorbis
 
+from unigen.types.audio_metadata import AudioFileMetadata
 from unigen.types.picture import PICTURE_NAME_TO_NUMBER, Picture
 
 from .audio_manager import IAudioManager, non_custom_tags
@@ -92,6 +93,10 @@ class VorbisWrapper(IAudioManager):
         extension_handlers = {".flac": CustomFLAC, ".ogg": CustomOgg, ".opus": CustomOpus}
         self.extension = extension.lower()
         self.audio: CustomFLAC | CustomOgg | CustomOpus = extension_handlers[extension](file_path)
+        self.file_path = file_path
+
+    def getFilePath(self):
+        return self.file_path
 
     def setTitle(self, newTitle):
         self.audio["title"] = newTitle
@@ -225,12 +230,6 @@ class VorbisWrapper(IAudioManager):
 
     def printInfo(self):
         return self.audio.pprint()
-
-    def getInfo(self):
-        return self.audio.info
-
-    def getExtension(self):
-        return self.extension
 
     def save(self):
         self.audio.save()

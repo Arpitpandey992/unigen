@@ -3,14 +3,15 @@ from typing import Literal
 
 from mutagen.mp4 import MP4, MP4Cover
 
-from unigen.wrapper.audio_manager import IAudioManager, non_custom_tags
+from unigen.types.audio_metadata import AudioFileMetadata
 from unigen.types.picture import Picture
+from unigen.wrapper.audio_manager import IAudioManager, non_custom_tags
 from unigen.wrapper.utils import (
     cleanDate,
     convertStringToNumber,
-    toList,
-    getFirstElement,
     extractYearFromDate,
+    getFirstElement,
+    toList,
 )
 
 
@@ -19,6 +20,10 @@ class MP4Wrapper(IAudioManager):
         extension_handlers = {".m4a": MP4}
         self.extension = extension.lower()
         self.audio = extension_handlers[extension](file_path)
+        self.file_path = file_path
+
+    def getFilePath(self):
+        return self.file_path
 
     def setTitle(self, newTitle):
         self.audio["\xa9nam"] = newTitle
@@ -141,12 +146,6 @@ class MP4Wrapper(IAudioManager):
 
     def printInfo(self):
         return self.audio.pprint()
-
-    def getInfo(self):
-        return self.audio.info
-
-    def getExtension(self):
-        return self.extension
 
     def save(self):
         self.audio.save()
