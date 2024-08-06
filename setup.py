@@ -5,9 +5,11 @@ with open("README.md", "r") as f:
 
 setup(
     name="unigen",
-    version="1.2",
+    version="1.3",
     packages=find_packages(),
-    install_requires=["mutagen"],
+    install_requires=[
+        "mutagen",
+    ],
     tests_require=[
         "pytest",
     ],
