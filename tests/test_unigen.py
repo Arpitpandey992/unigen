@@ -28,7 +28,7 @@ from unigen.wrapper.audio_manager import IAudioManager
 class IUnigenTester:
     single_cover_test = False
 
-    @pytest.fixture(scope="class")
+    @pytest.fixture(scope="module", autouse=True)
     @classmethod
     def setUpClass(cls):
         # Code to run once before any tests in this class
