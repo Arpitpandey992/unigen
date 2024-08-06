@@ -1,27 +1,27 @@
 import os
 import random
+import pytest
 
-# REMOVE#
-import sys
 from abc import abstractmethod
 from typing import Any, Callable, Optional, get_args
 
-import pytest
+# REMOVE
+import sys
 
 sys.path.append(os.getcwd())
+# REMOVE
+
 from tests.test_utils import (
     copy_base_samples,
     generate_random_japanese_string,
     generate_random_list_containing_random_strings,
     generate_random_number_between_inclusive,
     generate_random_string,
+    get_test_file_path,
     getRandomCoverImageData,
-    save_image,
     select_random_keys_from_list,
 )
 from unigen.types.picture import PICTURE_NAME_TO_NUMBER, PICTURE_TYPE, Picture
-
-# REMOVE#
 from unigen.wrapper.audio_manager import IAudioManager
 
 
@@ -48,6 +48,11 @@ class IUnigenTester:
     @abstractmethod
     def get_extension(cls) -> str:
         """Return the extension of the class to be tested"""
+
+    @classmethod
+    def get_filepath(cls) -> str:
+        """Return the filepath of the file to be tested"""
+        return get_test_file_path(cls.get_extension())
 
     @classmethod
     def is_single_cover_test(cls) -> bool:
@@ -184,8 +189,34 @@ class IUnigenTester:
         #     save_image(set_pictures[i].data, f"set_picture_{set_pictures[i].picture_type_name}_{self.get_extension()}.jpg") # For debugging, remove later
         self.assertListEqual(set_pictures, get_pictures)
 
-    
-    
+    def test_get_metadata(self):
+        # add a bunch of tags to the audio file by calling tag specific tests. Hacky way but it gets the job done :)
+        self.test_album()
+        self.test_title()
+        self.test_track_disc_number()
+        self.test_comment()
+        self.test_date()
+        self.test_catalog()
+        self.test_setting_multiple_pictures()
+
+        metadata = self.audio.getMetadata()
+        self.assertEqual(metadata.file_path, self.get_filepath())
+        self.assertEqual(metadata.file_name, os.path.basename(self.get_filepath()))
+        self.assertEqual(metadata.extension, "." + self.get_extension())
+
+        tags = metadata.tags
+        audio = self.audio
+
+        self.assertListEqual(tags.album, audio.getAlbum())
+        self.assertListEqual(tags.title, audio.getTitle())
+        self.assertEqual(tags.track_number, audio.getTrackNumber())
+        self.assertEqual(tags.total_tracks, audio.getTotalTracks())
+        self.assertEqual(tags.disc_number, audio.getDiscNumber())
+        self.assertEqual(tags.total_discs, audio.getTotalDiscs())
+        self.assertListEqual(tags.comment, audio.getComment())
+        self.assertListEqual(tags.catalog, audio.getCatalog())
+        self.assertListEqual(tags.pictures, audio.getAllPictures())
+
     def test_xx_save(self):
         """xx is prepended so that the audio file is saved at the end"""
         self.audio.save()
