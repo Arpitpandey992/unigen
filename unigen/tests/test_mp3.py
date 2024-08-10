@@ -1,5 +1,5 @@
-from tests.test_unigen import IUnigenTester
-from tests.test_utils import get_test_file_path
+from unigen.tests.test_unigen import IUnigenTester
+from unigen.tests.test_utils import get_test_file_path
 from unigen import AudioFactory
 from unigen.wrapper.audio_manager import IAudioManager
 

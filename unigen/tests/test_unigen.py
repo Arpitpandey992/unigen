@@ -11,7 +11,7 @@ import sys
 sys.path.append(os.getcwd())
 # REMOVE
 
-from tests.test_utils import (
+from unigen.tests.test_utils import (
     copy_base_samples,
     generate_random_japanese_string,
     generate_random_list_containing_random_strings,

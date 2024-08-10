@@ -1,7 +1,7 @@
 import re
 from typing import Literal
 
-from mutagen.mp4 import MP4, MP4Cover, MP4Info
+from mutagen.mp4 import MP4, MP4Cover
 
 from unigen.types.audio_metadata import MediaInfo
 from unigen.types.picture import Picture

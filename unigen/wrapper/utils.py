@@ -2,8 +2,6 @@ import re
 from math import ceil, log10
 from typing import Any
 
-from unigen.types.picture import PICTURE_NAME_TO_NUMBER, PICTURE_TYPE
-
 
 def isString(var: Any) -> bool:
     return isinstance(var, str)
