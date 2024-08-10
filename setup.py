@@ -3,13 +3,10 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as f:
     description = f.read()
 
-packages = find_packages()
-packages.remove("unigen.tests")  # remove tests to avoid bloating the package
-
 setup(
     name="unigen",
     version="1.4.2.post2",
-    packages=packages,
+    packages=find_packages(exclude=["*tests*"]),
     install_requires=[
         "mutagen",
     ],
