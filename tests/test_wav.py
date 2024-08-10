@@ -19,4 +19,4 @@ class TestWav(IUnigenTester):
         self.assertEqual(info.bit_rate, 1411200)
         self.assertEqual(info.bits_per_sample, 16)
         self.assertEqual(info.channels, 2)
-        self.assertEqual(info.sample_rate, 441000)
+        self.assertEqual(info.sample_rate, 44100)
