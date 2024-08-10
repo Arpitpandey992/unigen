@@ -53,8 +53,9 @@ class Tags:
 class MediaInfo:
     sample_rate: int | None = None
     channels: int | None = None
-    bit_rate: int | None = None
+    bitrate: int | None = None
     bits_per_sample: int | None = None
+    codec: str | None = None
 
 
 @dataclass

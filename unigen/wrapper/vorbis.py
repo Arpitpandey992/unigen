@@ -235,7 +235,8 @@ class VorbisWrapper(IAudioManager):
                 sample_rate=info.sample_rate if hasattr(info, "sample_rate") else None,
                 channels=info.channels if hasattr(info, "channels") else None,
                 bits_per_sample=info.bits_per_sample if hasattr(info, "bits_per_sample") else None,
-                bit_rate=info.bitrate if hasattr(info, "bitrate") else None,
+                bitrate=info.bitrate if hasattr(info, "bitrate") else None,
+                codec=info.codec if hasattr(info, "codec") else None,
             )
             if info
             else MediaInfo(sample_rate=44100, channels=2)

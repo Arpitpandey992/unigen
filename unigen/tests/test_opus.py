@@ -16,7 +16,7 @@ class TestOpus(IUnigenTester):
 
     def test_getInfo(self):
         info = self.audio.getMediaInfo()
-        self.assertEqual(info.bit_rate, None)  # unable to get any meaningful info from opus sadly
+        self.assertEqual(info.bitrate, None)  # unable to get any meaningful info from opus sadly
         self.assertEqual(info.bits_per_sample, None)
         self.assertEqual(info.channels, 2)
         self.assertEqual(info.sample_rate, None)

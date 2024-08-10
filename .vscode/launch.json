@@ -8,7 +8,7 @@
             "name": "Run Unit Tests",
             "type": "debugpy",
             "request": "launch",
-            "program": "tests/test_unigen.py",
+            "program": "unigen/tests/test_unigen.py",
             "console": "integratedTerminal"
         },
         {

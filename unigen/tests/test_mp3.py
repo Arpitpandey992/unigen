@@ -16,7 +16,7 @@ class TestMp3(IUnigenTester):
 
     def test_getInfo(self):
         info = self.audio.getMediaInfo()
-        self.assertEqual(info.bit_rate, 320000)
+        self.assertEqual(info.bitrate, 320000)
         self.assertEqual(info.bits_per_sample, None)
         self.assertEqual(info.channels, 2)
         self.assertEqual(info.sample_rate, 44100)

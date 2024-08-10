@@ -20,7 +20,7 @@ class TestM4a(IUnigenTester):
 
     def test_getInfo(self):
         info = self.audio.getMediaInfo()
-        self.assertEqual(info.bit_rate, 132757)
+        self.assertEqual(info.bitrate, 132757)
         self.assertEqual(info.bits_per_sample, 16)
         self.assertEqual(info.channels, 2)
         self.assertEqual(info.sample_rate, 44100)
