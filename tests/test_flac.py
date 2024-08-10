@@ -13,3 +13,10 @@ class TestFlac(IUnigenTester):
     @classmethod
     def get_extension(cls):
         return "flac"
+
+    def test_getInfo(self):
+        info = self.audio.getMediaInfo()
+        self.assertEqual(info.bit_rate, 1601342)
+        self.assertEqual(info.bits_per_sample, 24)
+        self.assertEqual(info.channels, 2)
+        self.assertEqual(info.sample_rate, 44100)

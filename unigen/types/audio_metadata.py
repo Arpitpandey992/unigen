@@ -50,8 +50,17 @@ class Tags:
 
 
 @dataclass
+class MediaInfo:
+    sample_rate: int | None = None
+    channels: int | None = None
+    bit_rate: int | None = None
+    bits_per_sample: int | None = None
+
+
+@dataclass
 class AudioFileMetadata:
     file_name: str
     file_path: str
     extension: str
     tags: Tags
+    media_info: MediaInfo

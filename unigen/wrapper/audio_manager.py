@@ -2,7 +2,7 @@ import os
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from unigen.types.audio_metadata import AudioFileMetadata, Tags
+from unigen.types.audio_metadata import AudioFileMetadata, MediaInfo, Tags
 from unigen.types.picture import PICTURE_TYPE, Picture
 
 """
@@ -176,7 +176,12 @@ class IAudioManager(ABC):
                 pictures=self.getAllPictures(),
                 extension=self.getExtension(),
             ),
+            media_info=self.getMediaInfo(),
         )
+
+    @abstractmethod
+    def getMediaInfo(self) -> MediaInfo:
+        """Retrieve media information like bitrate, bits per channel, etc"""
 
     @abstractmethod
     def save(self) -> None:

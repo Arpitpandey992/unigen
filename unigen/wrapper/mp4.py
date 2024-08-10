@@ -1,9 +1,9 @@
 import re
 from typing import Literal
 
-from mutagen.mp4 import MP4, MP4Cover
+from mutagen.mp4 import MP4, MP4Cover, MP4Info
 
-from unigen.types.audio_metadata import AudioFileMetadata
+from unigen.types.audio_metadata import MediaInfo
 from unigen.types.picture import Picture
 from unigen.wrapper.audio_manager import IAudioManager, non_custom_tags
 from unigen.wrapper.utils import (
@@ -143,6 +143,15 @@ class MP4Wrapper(IAudioManager):
         if "covr" in self.audio and self.audio["covr"][0].imageformat == MP4Cover.FORMAT_JPEG:
             pictures.append(Picture(picture_type=3, data=bytes(self.audio["covr"][0])))
         return pictures
+
+    def getMediaInfo(self) -> MediaInfo:
+        info = self.audio.info
+        return MediaInfo(
+            sample_rate=info.sample_rate if hasattr(info, "sample_rate") else None,
+            channels=info.channels if hasattr(info, "channels") else None,
+            bits_per_sample=info.bits_per_sample if hasattr(info, "bits_per_sample") else None,
+            bit_rate=info.bitrate if hasattr(info, "bitrate") else None,
+        )
 
     def printInfo(self):
         return self.audio.pprint()

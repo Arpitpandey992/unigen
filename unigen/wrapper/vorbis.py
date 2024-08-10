@@ -6,7 +6,7 @@ from mutagen.flac import Picture as PictureFLAC
 from mutagen.oggopus import OggOpus
 from mutagen.oggvorbis import OggVorbis
 
-from unigen.types.audio_metadata import AudioFileMetadata
+from unigen.types.audio_metadata import AudioFileMetadata, MediaInfo
 from unigen.types.picture import PICTURE_NAME_TO_NUMBER, Picture
 
 from .audio_manager import IAudioManager, non_custom_tags
@@ -227,6 +227,19 @@ class VorbisWrapper(IAudioManager):
         for picture in self.audio.pictures:
             pictures.append(Picture(picture_type=picture.type, data=picture.data))
         return pictures
+
+    def getMediaInfo(self) -> MediaInfo:
+        info = self.audio.info
+        return (
+            MediaInfo(
+                sample_rate=info.sample_rate if hasattr(info, "sample_rate") else None,
+                channels=info.channels if hasattr(info, "channels") else None,
+                bits_per_sample=info.bits_per_sample if hasattr(info, "bits_per_sample") else None,
+                bit_rate=info.bitrate if hasattr(info, "bitrate") else None,
+            )
+            if info
+            else MediaInfo(sample_rate=44100, channels=2)
+        )
 
     def printInfo(self):
         return self.audio.pprint()

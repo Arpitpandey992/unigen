@@ -13,3 +13,10 @@ class TestMp3(IUnigenTester):
     @classmethod
     def get_extension(cls):
         return "mp3"
+
+    def test_getInfo(self):
+        info = self.audio.getMediaInfo()
+        self.assertEqual(info.bit_rate, 320000)
+        self.assertEqual(info.bits_per_sample, None)
+        self.assertEqual(info.channels, 2)
+        self.assertEqual(info.sample_rate, 44100)

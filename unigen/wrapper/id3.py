@@ -5,7 +5,7 @@ from mutagen.id3._frames import APIC, COMM, TALB, TDRC, TIT2, TPOS, TRCK, TXXX
 from mutagen.mp3 import MP3
 from mutagen.wave import WAVE
 
-from unigen.types.audio_metadata import AudioFileMetadata
+from unigen.types.audio_metadata import AudioFileMetadata, MediaInfo
 from unigen.types.picture import PICTURE_NAME_TO_NUMBER, Picture
 
 from .audio_manager import IAudioManager, non_custom_tags
@@ -208,6 +208,15 @@ class ID3Wrapper(IAudioManager):
                         continue
                     pictures.append(Picture(picture_type=picture.__dict__.get("type", 0), data=picture.__dict__["data"]))
         return pictures
+
+    def getMediaInfo(self) -> MediaInfo:
+        info = self.audio.info
+        return MediaInfo(
+            sample_rate=info.sample_rate if hasattr(info, "sample_rate") else None,
+            channels=info.channels if hasattr(info, "channels") else None,
+            bits_per_sample=info.bits_per_sample if hasattr(info, "bits_per_sample") else None,
+            bit_rate=info.bitrate if hasattr(info, "bitrate") else None,
+        )
 
     def printInfo(self):
         return self.audio.pprint()
