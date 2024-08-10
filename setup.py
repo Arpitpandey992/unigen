@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="unigen",
-    version="1.4.2.post2",
+    version="1.4.3",
     packages=find_packages(exclude=["*tests*"]),
     install_requires=[
         "mutagen",
