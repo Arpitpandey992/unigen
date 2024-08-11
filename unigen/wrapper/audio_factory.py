@@ -1,8 +1,8 @@
 import os
-from .id3 import ID3Wrapper
-from .mp4 import MP4Wrapper
-from .audio_manager import IAudioManager
-from .vorbis import VorbisWrapper
+from unigen.wrapper.id3 import ID3Wrapper
+from unigen.wrapper.mp4 import MP4Wrapper
+from unigen.wrapper.audio_manager import IAudioManager
+from unigen.wrapper.vorbis import VorbisWrapper
 
 
 audioFileHandler = {

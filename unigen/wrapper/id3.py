@@ -8,8 +8,8 @@ from mutagen.wave import WAVE
 from unigen.types.audio_metadata import MediaInfo
 from unigen.types.picture import PICTURE_NAME_TO_NUMBER, Picture
 
-from .audio_manager import IAudioManager, non_custom_tags
-from .utils import (
+from unigen.wrapper.audio_manager import IAudioManager, non_custom_tags
+from unigen.wrapper.utils import (
     cleanDate,
     convertStringToNumber,
     extractYearFromDate,
