@@ -1,5 +1,5 @@
 # Unigen
-
+Warning: This module serves a very specific use case, so some metadata fields are not yet supported. For a more complete wrapper around Mutagen, use [this](https://github.com/beetbox/mediafile) (and star the repo while you are at it ;)
 Wrapper around python's mutagen package which provides a single interface to interact with audio metadata of various formats
 
 ## Dependencies installation
